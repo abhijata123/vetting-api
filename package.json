@@ -1,11 +1,14 @@
 {
   "name": "node-starter",
-  "private": true,
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node apiServer.js",
-    "dev": "node apiServer.js"
+    "dev": "node apiServer.js",
+    "build": "echo 'No build step required'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@mysten/sui": "^1.37.0",
