@@ -1,0 +1,15 @@
+{
+  "name": "node-starter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node apiServer.js",
+    "dev": "node apiServer.js"
+  },
+  "dependencies": {
+    "@mysten/sui": "^1.37.0",
+    "@scure/bip39": "^1.6.0",
+    "dotenv": "^17.2.1"
+  }
+}
