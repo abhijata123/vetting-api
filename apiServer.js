@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import crypto from 'crypto';
 import * as dotenv from 'dotenv';
 import { approveVetting } from './lib/approveVetting.js';
 import { statusOfVetting } from './lib/statusOfVetting.js';
@@ -118,7 +119,7 @@ app.post('/api/create-wallet', async (req, res) => {
         const completeUserDetails = {
             id: userDetails.id,
             created_at: userDetails.created_at || new Date().toISOString(),
-            secret_key: userDetails.secret_key || require('crypto').randomBytes(32).toString('hex'),
+            secret_key: userDetails.secret_key || crypto.randomBytes(32).toString('hex'),
             ...userDetails
         };
 
