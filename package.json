@@ -10,6 +10,8 @@
   "dependencies": {
     "@mysten/sui": "^1.37.0",
     "@scure/bip39": "^1.6.0",
-    "dotenv": "^17.2.1"
+    "dotenv": "^17.2.1",
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
   }
 }
