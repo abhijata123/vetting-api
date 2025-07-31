@@ -26,7 +26,6 @@ export async function createCustodialWallet(userDetails) {
     
     // Get private key in different formats
     const secretKeyArray = keypair.getSecretKey();
-    const privateKeyBytes = secretKeyArray.slice(0, 32);
     const privateKeyHex = Buffer.from(privateKeyBytes).toString('hex');
     const privateKeyBase64 = Buffer.from(privateKeyBytes).toString('base64');
     
@@ -92,7 +91,6 @@ export async function createCustodialWalletWithStandardMnemonic(userDetails) {
     
     // Get private key and address
     const secretKeyArray = keypair.getSecretKey();
-    const privateKeyBytes = secretKeyArray.slice(0, 32);
     const privateKeyHex = Buffer.from(privateKeyBytes).toString('hex');
     const privateKeyBase64 = Buffer.from(privateKeyBytes).toString('base64');
     const publicKey = keypair.getPublicKey();
