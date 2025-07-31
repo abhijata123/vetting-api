@@ -26,8 +26,9 @@ export async function createCustodialWallet(userDetails) {
     
     // Get private key in different formats
     const secretKeyArray = keypair.getSecretKey();
-    const privateKeyHex = Buffer.from(secretKeyArray.slice(0, 32)).toString('hex');
-    const privateKeyBase64 = Buffer.from(secretKeyArray.slice(0, 32)).toString('base64');
+    const privateKeyBytes = secretKeyArray.slice(0, 32);
+    const privateKeyHex = Buffer.from(privateKeyBytes).toString('hex');
+    const privateKeyBase64 = Buffer.from(privateKeyBytes).toString('base64');
     
     // Get public key and address
     const publicKey = keypair.getPublicKey();
@@ -43,7 +44,7 @@ export async function createCustodialWallet(userDetails) {
       privateKeyBase64,
       mnemonic,
       // Additional info for debugging
-      seedHex: Buffer.from(privateKeyBytes).toString('hex')
+      seedHex: Buffer.from(seed.slice(0, 32)).toString('hex')
     };
   } catch (err) {
     console.error('Wallet creation error:', err);
@@ -91,8 +92,9 @@ export async function createCustodialWalletWithStandardMnemonic(userDetails) {
     
     // Get private key and address
     const secretKeyArray = keypair.getSecretKey();
-    const privateKeyHex = Buffer.from(secretKeyArray.slice(0, 32)).toString('hex');
-    const privateKeyBase64 = Buffer.from(secretKeyArray.slice(0, 32)).toString('base64');
+    const privateKeyBytes = secretKeyArray.slice(0, 32);
+    const privateKeyHex = Buffer.from(privateKeyBytes).toString('hex');
+    const privateKeyBase64 = Buffer.from(privateKeyBytes).toString('base64');
     const publicKey = keypair.getPublicKey();
     const address = publicKey.toSuiAddress();
     
