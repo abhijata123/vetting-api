@@ -78,7 +78,7 @@ app.post('/api/submit-for-vetting', async (req, res) => {
     try {
         const { walletCredentials } = req.body;
         
-        // walletCredentials is optional - if not provided, will use env variables
+        // walletCredentials should be provided - if not provided, will use env variables as fallback
         const result = await submitForVetting(walletCredentials);
         res.json(result);
     } catch (error) {
