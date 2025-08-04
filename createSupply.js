@@ -81,6 +81,11 @@ export async function createSupply(limit, tokenTypeName) {
 
         console.log('Full Transaction Result:', JSON.stringify(result, null, 2));
 
+        // Check if the transaction was successful before proceeding
+        if (result.effects?.status?.status !== 'success') {
+            throw new Error(`Sui transaction failed: ${result.effects?.status?.error || 'Unknown error'}`);
+        }
+
         const createdBraav = result.objectChanges?.find(
             (change) => change.type === 'created' && change.objectType.includes('::braav_public::BRAAV')
         );
