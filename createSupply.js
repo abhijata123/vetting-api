@@ -1,4 +1,3 @@
-```javascript
 import { SuiClient } from '@mysten/sui/client';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Transaction } from '@mysten/sui/transactions';
@@ -21,7 +20,7 @@ async function fetchWithRetry(client, objectId, retries = 10, delayMs = 2000) {
             if (obj.data) return obj;
         } catch (e) {
             if (e.code !== 'notExists') throw e;
-            console.log(\`Object ${objectId} not yet available, retrying... (${retries - i - 1} left)`);
+            console.log('Object ' + objectId + ' not yet available, retrying... (' + (retries - i - 1) + ' left)');
             await new Promise(res => setTimeout(res, delayMs));
         }
     }
