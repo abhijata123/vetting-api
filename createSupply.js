@@ -8,7 +8,7 @@ dotenv.config();
 const mnemonic = process.env.MNEMONIC || '';
 const packageId = process.env.PACKAGE_ID || '';
 const suiNetwork = process.env.SUI_NETWORK || '';
-const adminCapId = process.env.ADMIN_CAP || ''; // Changed from creatorCapId to adminCapId
+const creatorCapId = process.env.CREATOR_CAP_ID || '';
 
 async function fetchWithRetry(client, objectId, retries = 10, delayMs = 2000) {
     for (let i = 0; i < retries; i++) {
@@ -34,7 +34,7 @@ async function createSupply(limit, braavTypeArg) {
         if (!mnemonic) throw new Error('MNEMONIC not set');
         if (!packageId) throw new Error('PACKAGE_ID not set');
         if (!suiNetwork) throw new Error('SUI_NETWORK not set');
-        if (!adminCapId) throw new Error('ADMIN_CAP not set'); // Changed check to adminCapId
+        if (!creatorCapId) throw new Error('CREATOR_CAP_ID not set');
 
         const keypair = Ed25519Keypair.deriveKeypair(mnemonic);
         const client = new SuiClient({ url: suiNetwork });
@@ -56,7 +56,7 @@ async function createSupply(limit, braavTypeArg) {
         const braavObj = tx.moveCall({
             target: `${packageId}::braav_public::create_supply`,
             arguments: [
-                tx.object(adminCapId), // Changed to adminCapId
+                tx.object(creatorCapId),
                 tx.pure.u64(limit),
             ],
             typeArguments: [braavTypeArg],
