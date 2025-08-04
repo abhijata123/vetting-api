@@ -27,7 +27,9 @@ async function fetchWithRetry(client, objectId, retries = 10, delayMs = 2000) {
     throw new Error(`Object ${objectId} not found after ${retries} retries`);
 }
 
-async function createSupply(limit, braavTypeArg) {
+export async function createSupply(limit, tokenTypeName) {
+    // Build the full type argument from the tokenTypeName
+    const braavTypeArg = `${packageId}::xoa::${tokenTypeName}`;
     const braavNumber = braavTypeArg.match(/BRAAV\d+/)?.[0] || 'Unknown BRAAV';
 
     try {
@@ -113,9 +115,3 @@ async function createSupply(limit, braavTypeArg) {
         throw error;
     }
 }
-
-console.log('Attempting to create supply...');
-createSupply(10, `${packageId}::xoa::BRAAV1`).catch((error) => {
-    console.error('Script execution failed:', error.message);
-    process.exit(1);
-});

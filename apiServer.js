@@ -7,6 +7,7 @@ import { statusOfVetting } from './lib/statusOfVetting.js';
 import { submitForVetting } from './lib/submitForVetting.js';
 import { initializeVettingTable } from './lib/initializeVettingTable.js';
 import { createCustodialWallet, createCustodialWalletWithStandardMnemonic } from './createCustodialWallet.js';
+import { createSupply } from './createSupply.js';
 
 // Load environment variables
 dotenv.config();
@@ -144,6 +145,39 @@ app.post('/api/create-wallet', async (req, res) => {
     }
 });
 
+// 6. Create Supply
+app.post('/api/create-supply', async (req, res) => {
+    try {
+        const { supplyLimit, tokenTypeName } = req.body;
+        
+        if (typeof supplyLimit === 'undefined' || !tokenTypeName) {
+            return res.status(400).json({ 
+                error: 'supplyLimit (number) and tokenTypeName (string) are required in request body' 
+            });
+        }
+
+        // Validate supplyLimit is a number
+        if (typeof supplyLimit !== 'number' || supplyLimit <= 0) {
+            return res.status(400).json({ 
+                error: 'supplyLimit must be a positive number' 
+            });
+        }
+
+        const result = await createSupply(supplyLimit, tokenTypeName);
+        res.json({
+            success: true,
+            message: 'Supply created successfully',
+            result: result
+        });
+    } catch (error) {
+        console.error('Create supply error:', error);
+        res.status(500).json({ 
+            error: error.message,
+            endpoint: '/api/create-supply'
+        });
+    }
+});
+
 // Get all available endpoints
 app.get('/api/endpoints', (req, res) => {
     res.json({
@@ -188,6 +222,15 @@ app.get('/api/endpoints', (req, res) => {
                 body: { 
                     userDetails: { id: 'string (required)', created_at: 'string', secret_key: 'string' },
                     useStandardMnemonic: 'boolean (optional)'
+                }
+            },
+            {
+                method: 'POST',
+                path: '/api/create-supply',
+                description: 'Create a new supply for a token type',
+                body: { 
+                    supplyLimit: 'number (required)',
+                    tokenTypeName: 'string (required)'
                 }
             },
             {

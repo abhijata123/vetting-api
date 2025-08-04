@@ -119,6 +119,30 @@ Content-Type: application/json
 }
 ```
 
+### 8. Create Supply
+**POST** `http://localhost:3000/api/create-supply`
+
+**Headers:**
+```
+Content-Type: application/json
+```
+
+**Body (JSON):**
+```json
+{
+  "supplyLimit": 100,
+  "tokenTypeName": "BRAAV1"
+}
+```
+
+**Body (JSON) - Another example:**
+```json
+{
+  "supplyLimit": 1000,
+  "tokenTypeName": "BRAAV2"
+}
+```
+
 ## Expected Response Formats
 
 ### Success Response Example:
@@ -149,6 +173,19 @@ Content-Type: application/json
 }
 ```
 
+### Create Supply Response Example:
+```json
+{
+  "success": true,
+  "message": "Supply created successfully",
+  "result": {
+    "digest": "ABC123...",
+    "objectChanges": [...],
+    "effects": {...}
+  }
+}
+```
+
 ## Testing Workflow
 
 1. **Start with Health Check** - Verify server is running
@@ -157,6 +194,7 @@ Content-Type: application/json
 4. **Check Status** - Verify the submission was successful
 5. **Approve Vetting** - Approve the submitted address (requires admin credentials)
 6. **Check Status Again** - Verify the approval was successful
+7. **Create Supply** - Create a new token supply with specified limit and type
 
 ## Important Notes
 
