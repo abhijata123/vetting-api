@@ -1,4 +1,4 @@
-```javascript
+
 import { SuiClient } from '@mysten/sui/client';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Transaction } from '@mysten/sui/transactions';
@@ -120,4 +120,3 @@ createSupply(10, `${packageId}::xoa::BRAAV1`).catch((error) => {
     console.error('Script execution failed:', error.message);
     process.exit(1);
 });
-```
