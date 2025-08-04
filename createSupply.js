@@ -21,11 +21,11 @@ async function fetchWithRetry(client, objectId, retries = 10, delayMs = 2000) {
             if (obj.data) return obj;
         } catch (e) {
             if (e.code !== 'notExists') throw e;
-            console.log(`Object ${objectId} not yet available, retrying... (${retries - i - 1} left)`);
+            console.log(\`Object ${objectId} not yet available, retrying... (${retries - i - 1} left)`);
             await new Promise(res => setTimeout(res, delayMs));
         }
     }
-    throw new Error(`Object ${objectId} not found after ${retries} retries`);
+    throw new Error(\`Object ${objectId} not found after ${retries} retries`);
 }
 
 async function createSupply(limit, braavTypeArg) {
@@ -40,7 +40,7 @@ async function createSupply(limit, braavTypeArg) {
         const keypair = Ed25519Keypair.deriveKeypair(mnemonic);
         const client = new SuiClient({ url: suiNetwork });
 
-        const braavType = `${packageId}::braav_public::BRAAV<${braavTypeArg}>`;
+        const braavType = \`${packageId}::braav_public::BRAAV<${braavTypeArg}>`;
 
         // Check for existing BRAAV objects
         const objects = await client.getOwnedObjects({
