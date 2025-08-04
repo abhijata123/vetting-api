@@ -56,7 +56,7 @@ async function createSupply(limit, braavTypeArg) {
         const braavObj = tx.moveCall({
             target: `${packageId}::braav_public::create_supply`,
             arguments: [
-                tx.object(creatorCapId),
+                tx.object(creatorCapId), // Pass shared CreatorCap object
                 tx.pure.u64(limit),
             ],
             typeArguments: [braavTypeArg],
