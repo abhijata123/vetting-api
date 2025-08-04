@@ -7,7 +7,7 @@ const suiNetwork = process.env.SUI_NETWORK || '';
 const client = new SuiClient({ url: suiNetwork });
 
 // Replace this with your actual deployment transaction digest
-const digest = 'AT3ztUENkqevcjYfXLpd47tfe43CJWYTkVrN3wG8Ckgd';
+const digest = '2WbzbDiW2GQhkgJxUKe2aH4XoJQ99MbB9MNjPdbPLhDU';
 
 async function getCreatorCapObjectId() {
     try {
