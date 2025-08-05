@@ -9,12 +9,12 @@ dotenv.config();
 // Load required environment variables
 const clock = process.env.CLOCK_OBJECT_ID || '0x6';
 const mnemonic = process.env.MNEMONIC || '';
-const packageId = process.env.PACKAGE_ID || '';
-const supplyCapId = process.env.SUPPLY_CAP_ID || '';
-const lineageId = process.env.LINEAGE_ID || '';
-const counterId = process.env.COUNTER_ID || '';
+const packageId = '0x96d85be3bc79ea5677851da858e1185a2461af41a0998dbe691770671ecc9c07'; // Hardcoded demo value
+const supplyCapId = '0x8087f5c6ecda7a6ae4343674a28d7b94693881cc377ffec4777c8da908ecfa19'; // Hardcoded demo value
+const lineageId = '0xf8400d8a1d49fa0b4497c437221fad985acd112f8c64980bfd70cc7101e351a9'; // Hardcoded demo value
+const counterId = '0x90aa4067839f55cb2e5b5bacb6489f60e6eee11f5ec607f3e95f492cac75f7c8'; // Hardcoded demo value
 const suiNetwork = process.env.SUI_NETWORK || '';
-const recipientAddress = process.env.RECIPIENT_ADDRESS || '0x85256c63276f9f62047042948a1c2a4a2694427498ec759c5ac7e34cbd95c6d4';
+const recipientAddress = '0x85256c63276f9f62047042948a1c2a4a2694427498ec759c5ac7e34cbd95c6d4'; // Hardcoded demo value
 const nftType = `${packageId}::xoa::BRAAV1`;
 
 async function mintAndTransfer() {
