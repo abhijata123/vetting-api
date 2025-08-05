@@ -13,9 +13,11 @@ const packageId = '0x96d85be3bc79ea5677851da858e1185a2461af41a0998dbe691770671ec
 const supplyCapId = '0x8087f5c6ecda7a6ae4343674a28d7b94693881cc377ffec4777c8da908ecfa19'; // Hardcoded demo value
 const lineageId = '0xf8400d8a1d49fa0b4497c437221fad985acd112f8c64980bfd70cc7101e351a9'; // Hardcoded demo value
 const counterId = '0x90aa4067839f55cb2e5b5bacb6489f60e6eee11f5ec607f3e95f492cac75f7c8'; // Hardcoded demo value
+const badgeCoinId = 'BADGE_001'; // Badge coin identifier
 const suiNetwork = process.env.SUI_NETWORK || '';
 const recipientAddress = '0x85256c63276f9f62047042948a1c2a4a2694427498ec759c5ac7e34cbd95c6d4'; // Hardcoded demo value
-const nftType = `${packageId}::xoa::BRAAV1`;
+// Fixed: Changed from BRAAV1 to BRAAV16 to match your transaction
+const nftType = `${packageId}::xoa::BRAAV16`;
 
 async function mintAndTransfer() {
     try {
@@ -25,6 +27,7 @@ async function mintAndTransfer() {
         if (!supplyCapId) throw new Error('SUPPLY_CAP_ID not set');
         if (!lineageId) throw new Error('LINEAGE_ID not set');
         if (!counterId) throw new Error('COUNTER_ID not set');
+        if (!badgeCoinId) throw new Error('BADGE_COIN_ID not set');
         if (!suiNetwork) throw new Error('SUI_NETWORK not set');
         if (!recipientAddress) throw new Error('RECIPIENT_ADDRESS not set');
         if (!isValidSuiAddress(recipientAddress)) throw new Error(`Invalid recipient address format: ${recipientAddress}`);
@@ -33,13 +36,36 @@ async function mintAndTransfer() {
         const keypair = Ed25519Keypair.deriveKeypair(mnemonic);
         const client = new SuiClient({ url: suiNetwork });
 
+        // Debug: Log all parameters being used
+        console.log('🔍 Minting Parameters:');
+        console.log('  Package ID:', packageId);
+        console.log('  Supply Cap ID:', supplyCapId);
+        console.log('  Lineage ID:', lineageId);
+        console.log('  Counter ID:', counterId);
+        console.log('  Badge Coin ID:', badgeCoinId);
+        console.log('  NFT Type:', nftType);
+        console.log('  Recipient:', recipientAddress);
+
+        // Debug: Let's first inspect the supply cap object to understand its type
+        console.log('🔍 Checking supply cap object...');
+        try {
+            const supplyCapObject = await client.getObject({
+                id: supplyCapId,
+                options: { showType: true, showContent: true }
+            });
+            console.log('Supply Cap Object Type:', supplyCapObject.data?.type);
+            console.log('Supply Cap Object Content:', JSON.stringify(supplyCapObject.data?.content, null, 2));
+        } catch (debugError) {
+            console.log('Could not fetch supply cap object for debugging:', debugError.message);
+        }
+
         const tx = new Transaction();
 
         tx.moveCall({
             target: `${packageId}::braav_public::mint_and_transfer`,
             arguments: [
                 tx.pure.string("NFT_Example"), // name
-                tx.pure.string("COIN_123"), // coin_id
+                tx.pure.string(badgeCoinId), // coin_id (using badge coin id)
                 tx.object(supplyCapId), // supply_cap
                 tx.object(lineageId), // lineage
                 tx.object(counterId), // counter
@@ -82,6 +108,7 @@ async function mintAndTransfer() {
         const nftObjectId = createdNFT?.objectId ?? 'Not found';
         console.log(`✅ Minted and Shared NFT with recipient ${recipientAddress}`);
         console.log(`🎯 NFT Object ID: ${nftObjectId}`);
+        console.log(`🏷️  Badge Coin ID used: ${badgeCoinId}`);
 
         return result;
     } catch (error) {
