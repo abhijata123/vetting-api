@@ -91,8 +91,8 @@ export async function createCustodialWalletWithStandardMnemonic(userDetails) {
     
     // Get private key and address
     const secretKeyArray = keypair.getSecretKey();
-    const privateKeyHex = Buffer.from(privateKeyBytes).toString('hex');
-    const privateKeyBase64 = Buffer.from(privateKeyBytes).toString('base64');
+    const privateKeyHex = Buffer.from(secretKeyArray).toString('hex');
+    const privateKeyBase64 = Buffer.from(secretKeyArray).toString('base64');
     const publicKey = keypair.getPublicKey();
     const address = publicKey.toSuiAddress();
     
