@@ -1,5 +1,5 @@
 import { Transaction } from "@mysten/sui/transactions";
-import { SuiClient, SuiObjectChangeCreated } from "@mysten/sui/client";
+import { SuiClient } from "@mysten/sui/client";
 import { bcs } from "@mysten/sui/bcs";
 import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
 
