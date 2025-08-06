@@ -67,7 +67,7 @@ export async function createDisplay(mnemonic, publisherId, packageId, suiNetwork
     }
 
     const objectChanges = result.objectChanges?.filter(
-      (change): change is SuiObjectChangeCreated => change.type === "created" && change.objectType.includes("0x2::display::Display")
+      (change) => change.type === "created" && change.objectType.includes("0x2::display::Display")
     );
 
     const nftDisplayId = objectChanges?.find(change => change.objectType.includes("NFT"))?.objectId;
