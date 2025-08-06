@@ -1,7 +1,7 @@
-// Simple script to convert Sui private key to wallet address
+// Simple script to convert Sui private key to wallet address (ES Module version)
 // Note: This is for educational/recovery purposes only
 
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 function hexToBytes(hex) {
     const bytes = [];
@@ -25,9 +25,6 @@ function getSuiAddressFromPrivateKey(privateKeyHex) {
         // Convert hex to bytes
         const privateKeyBytes = hexToBytes(cleanPrivateKey);
         
-        // For Sui, we need to use Ed25519
-        // This is a simplified version - in practice you'd use @mysten/sui.js
-        
         console.log('Private Key (hex):', cleanPrivateKey);
         console.log('Private Key length:', privateKeyBytes.length, 'bytes');
         
@@ -38,6 +35,7 @@ function getSuiAddressFromPrivateKey(privateKeyHex) {
         
         return {
             privateKey: cleanPrivateKey,
+            privateKeyBytes: privateKeyBytes,
             note: "Use @mysten/sui.js for actual address derivation"
         };
         
@@ -47,7 +45,7 @@ function getSuiAddressFromPrivateKey(privateKeyHex) {
     }
 }
 
-// Example usage (replace with your private key)
+// Example usage (replace with your actual private key)
 const privateKey = "737569707269766b65793171706c7032713070347a3972786e3861667436347970306b777963336c6c66367539667a793061637a6d336476726166757261686a30307a78676d";
 const result = getSuiAddressFromPrivateKey(privateKey);
 
@@ -55,12 +53,14 @@ if (result) {
     console.log('\nResult:', result);
 }
 
-// Better approach using Sui SDK (pseudo-code):
-console.log('\n--- Proper way with Sui SDK ---');
+// Better approach using Sui SDK (ES Module syntax):
+console.log('\n--- Proper way with Sui SDK (ES Module) ---');
 console.log(`
-const { Ed25519Keypair } = require('@mysten/sui.js/keypairs/ed25519');
+import { Ed25519Keypair } from '@mysten/sui.js/keypairs/ed25519';
 
-// From private key bytes
+// First install: npm install @mysten/sui.js
+const privateKeyHex = "your_private_key_here";
+const privateKeyBytes = new Uint8Array(Buffer.from(privateKeyHex, 'hex'));
 const keypair = Ed25519Keypair.fromSecretKey(privateKeyBytes);
 const address = keypair.getPublicKey().toSuiAddress();
 
