@@ -14,6 +14,7 @@ import { createCustodialWallet, createCustodialWalletWithStandardMnemonic } from
 import { createSupply } from './createSupply.js';
 import { createDisplay } from './display.js';
 import { createRestrictedDisplay } from './restrictedDisplay.js';
+import { mintRestrictedNFT } from './mintRestrictedNFT.js';
 
 // Load environment variables
 dotenv.config();
@@ -35,6 +36,43 @@ const validateMintRequest = (req, res, next) => {
         'recipientAddress',
         'nftName',
         'badgeCoinId'
+    ];
+
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+    
+    if (missingFields.length > 0) {
+        return res.status(400).json({
+            success: false,
+            error: 'Missing required fields',
+            missingFields,
+            requiredFields
+        });
+    }
+
+    // Validate recipient address format
+    if (!isValidSuiAddress(req.body.recipientAddress)) {
+        return res.status(400).json({
+            success: false,
+            error: 'Invalid recipient address format',
+            recipientAddress: req.body.recipientAddress
+        });
+    }
+
+    next();
+};
+
+// Request validation middleware for restricted NFT minting
+const validateRestrictedMintRequest = (req, res, next) => {
+    const requiredFields = [
+        'packageId',
+        'supplyCapId',
+        'creatorCapId',
+        'lineageId',
+        'counterId',
+        'recipientAddress',
+        'nftName',
+        'coinId',
+        'braavVersion'
     ];
 
     const missingFields = requiredFields.filter(field => !req.body[field]);
@@ -575,6 +613,79 @@ app.post('/api/mint-nft', validateMintRequest, async (req, res) => {
     }
 });
 
+// 11. Mint Restricted NFT
+app.post('/api/mint-restricted-nft', validateRestrictedMintRequest, async (req, res) => {
+    try {
+        console.log('🚀 Received restricted NFT minting request:', {
+            nftName: req.body.nftName,
+            coinId: req.body.coinId,
+            recipientAddress: req.body.recipientAddress,
+            braavVersion: req.body.braavVersion,
+            timestamp: new Date().toISOString()
+        });
+
+        // Get environment variables
+        const mnemonic = process.env.MNEMONIC;
+        const suiNetwork = process.env.SUI_NETWORK;
+        
+        if (!mnemonic) {
+            return res.status(500).json({ 
+                error: 'MNEMONIC not configured in environment variables' 
+            });
+        }
+        
+        if (!suiNetwork) {
+            return res.status(500).json({ 
+                error: 'SUI_NETWORK not configured in environment variables' 
+            });
+        }
+
+        const result = await mintRestrictedNFT(
+            mnemonic,
+            req.body.packageId,
+            suiNetwork,
+            req.body.supplyCapId,
+            req.body.creatorCapId,
+            req.body.lineageId,
+            req.body.counterId,
+            req.body.recipientAddress,
+            req.body.nftName,
+            req.body.coinId,
+            req.body.braavVersion
+        );
+
+        console.log('✅ Restricted NFT minted successfully:', {
+            transactionDigest: result.transactionDigest,
+            restrictedNftObjectId: result.restrictedNftObjectId
+        });
+
+        res.json({
+            success: true,
+            message: 'Restricted NFT minted successfully',
+            data: {
+                transactionDigest: result.transactionDigest,
+                restrictedNftObjectId: result.restrictedNftObjectId,
+                recipientAddress: result.recipientAddress,
+                nftName: result.nftName,
+                coinId: result.coinId,
+                braavVersion: result.braavVersion,
+                gasUsed: result.gasUsed
+            },
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('❌ Restricted NFT Minting Error:', error.message);
+        
+        res.status(500).json({
+            success: false,
+            message: 'Failed to mint restricted NFT',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // Get all available endpoints
 app.get('/api/endpoints', (req, res) => {
     res.json({
@@ -662,6 +773,22 @@ app.get('/api/endpoints', (req, res) => {
                 body: { 
                     displayKeys: 'array of strings (required) - e.g., ["name", "image_url", "description", "project_url", "coin_story", "video_url"]',
                     displayValues: 'array of strings (required) - corresponding values for the keys',
+                    braavVersion: 'string (required) - e.g., "BRAAV3", "BRAAV16", "BRAAV17"'
+                }
+            },
+            {
+                method: 'POST',
+                path: '/api/mint-restricted-nft',
+                description: 'Mint a restricted NFT (non-transferable by users)',
+                body: { 
+                    packageId: 'string (required)',
+                    supplyCapId: 'string (required)',
+                    creatorCapId: 'string (required)',
+                    lineageId: 'string (required)',
+                    counterId: 'string (required)',
+                    recipientAddress: 'string (required)',
+                    nftName: 'string (required)',
+                    coinId: 'string (required)',
                     braavVersion: 'string (required) - e.g., "BRAAV3", "BRAAV16", "BRAAV17"'
                 }
             },
