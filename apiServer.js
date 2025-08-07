@@ -64,9 +64,7 @@ const validateMintRequest = (req, res, next) => {
 // Request validation middleware for restricted NFT minting
 const validateRestrictedMintRequest = (req, res, next) => {
     const requiredFields = [
-        'packageId',
         'supplyCapId',
-        'creatorCapId',
         'lineageId',
         'counterId',
         'recipientAddress',
@@ -626,11 +624,25 @@ app.post('/api/mint-restricted-nft', validateRestrictedMintRequest, async (req, 
 
         // Get environment variables
         const mnemonic = process.env.MNEMONIC;
+        const packageId = process.env.PACKAGE_ID;
+        const creatorCapId = process.env.CREATOR_CAP_ID;
         const suiNetwork = process.env.SUI_NETWORK;
         
         if (!mnemonic) {
             return res.status(500).json({ 
                 error: 'MNEMONIC not configured in environment variables' 
+            });
+        }
+        
+        if (!packageId) {
+            return res.status(500).json({ 
+                error: 'PACKAGE_ID not configured in environment variables' 
+            });
+        }
+        
+        if (!creatorCapId) {
+            return res.status(500).json({ 
+                error: 'CREATOR_CAP_ID not configured in environment variables' 
             });
         }
         
@@ -642,10 +654,10 @@ app.post('/api/mint-restricted-nft', validateRestrictedMintRequest, async (req, 
 
         const result = await mintRestrictedNFT(
             mnemonic,
-            req.body.packageId,
+            packageId,
             suiNetwork,
             req.body.supplyCapId,
-            req.body.creatorCapId,
+            creatorCapId,
             req.body.lineageId,
             req.body.counterId,
             req.body.recipientAddress,
@@ -781,9 +793,7 @@ app.get('/api/endpoints', (req, res) => {
                 path: '/api/mint-restricted-nft',
                 description: 'Mint a restricted NFT (non-transferable by users)',
                 body: { 
-                    packageId: 'string (required)',
                     supplyCapId: 'string (required)',
-                    creatorCapId: 'string (required)',
                     lineageId: 'string (required)',
                     counterId: 'string (required)',
                     recipientAddress: 'string (required)',
