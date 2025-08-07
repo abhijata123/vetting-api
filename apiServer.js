@@ -14,7 +14,6 @@ import { createCustodialWallet, createCustodialWalletWithStandardMnemonic } from
 import { createSupply } from './createSupply.js';
 import { createDisplay } from './display.js';
 import { createRestrictedDisplay } from './restrictedDisplay.js';
-import { mintRestrictedNFT } from './lib/mintRestrictedNFT.js';
 
 // Load environment variables
 dotenv.config();
@@ -533,49 +532,6 @@ app.post('/api/create-restricted-display', async (req, res) => {
     }
 });
 
-// 11. Mint Restricted NFT
-app.post('/api/mint-restricted-nft', validateMintRequest, async (req, res) => {
-    try {
-        console.log('🚀 Received restricted NFT minting request:', {
-            nftName: req.body.nftName,
-            badgeCoinId: req.body.badgeCoinId,
-            recipientAddress: req.body.recipientAddress,
-            timestamp: new Date().toISOString()
-        });
-
-        const result = await mintRestrictedNFT(req.body);
-
-        console.log('✅ Restricted NFT minted successfully:', {
-            transactionDigest: result.transactionDigest,
-            restrictedNftObjectId: result.restrictedNftObjectId
-        });
-
-        res.json({
-            success: true,
-            message: 'Restricted NFT minted and transferred successfully',
-            data: {
-                transactionDigest: result.transactionDigest,
-                restrictedNftObjectId: result.restrictedNftObjectId,
-                recipientAddress: result.recipientAddress,
-                nftName: result.nftName,
-                badgeCoinId: result.badgeCoinId,
-                gasUsed: result.gasUsed
-            },
-            timestamp: new Date().toISOString()
-        });
-
-    } catch (error) {
-        console.error('❌ API Error:', error.message);
-        
-        res.status(500).json({
-            success: false,
-            message: 'Failed to mint restricted NFT',
-            error: error.message,
-            timestamp: new Date().toISOString()
-        });
-    }
-});
-
 // 9. Mint NFT
 app.post('/api/mint-nft', validateMintRequest, async (req, res) => {
     try {
@@ -707,21 +663,6 @@ app.get('/api/endpoints', (req, res) => {
                     displayKeys: 'array of strings (required) - e.g., ["name", "image_url", "description", "project_url", "coin_story", "video_url"]',
                     displayValues: 'array of strings (required) - corresponding values for the keys',
                     braavVersion: 'string (required) - e.g., "BRAAV3", "BRAAV16", "BRAAV17"'
-                }
-            },
-            {
-                method: 'POST',
-                path: '/api/mint-restricted-nft',
-                description: 'Mint and transfer Restricted NFT to recipient',
-                body: { 
-                    packageId: 'string (required)',
-                    supplyCapId: 'string (required)',
-                    lineageId: 'string (required)',
-                    counterId: 'string (required)',
-                    recipientAddress: 'string (required)',
-                    nftName: 'string (required)',
-                    badgeCoinId: 'string (required)',
-                    nftVersion: 'string (optional, default: BRAAV16)'
                 }
             },
             {
