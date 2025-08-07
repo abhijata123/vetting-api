@@ -13,6 +13,7 @@ import { initializeVettingTable } from './lib/initializeVettingTable.js';
 import { createCustodialWallet, createCustodialWalletWithStandardMnemonic } from './createCustodialWallet.js';
 import { createSupply } from './createSupply.js';
 import { createDisplay } from './display.js';
+import { createRestrictedDisplay } from './restrictedDisplay.js';
 
 // Load environment variables
 dotenv.config();
@@ -426,6 +427,111 @@ app.post('/api/create-display', async (req, res) => {
     }
 });
 
+// 10. Create Restricted Display
+app.post('/api/create-restricted-display', async (req, res) => {
+    try {
+        const { displayKeys, displayValues, braavVersion } = req.body;
+        
+        // Validate required fields
+        if (!displayKeys || !Array.isArray(displayKeys)) {
+            return res.status(400).json({ 
+                error: 'displayKeys is required and must be an array' 
+            });
+        }
+        
+        if (!displayValues || !Array.isArray(displayValues)) {
+            return res.status(400).json({ 
+                error: 'displayValues is required and must be an array' 
+            });
+        }
+        
+        if (displayKeys.length !== displayValues.length) {
+            return res.status(400).json({ 
+                error: 'displayKeys and displayValues must have the same length' 
+            });
+        }
+        
+        if (!braavVersion || typeof braavVersion !== 'string') {
+            return res.status(400).json({ 
+                error: 'braavVersion is required and must be a string' 
+            });
+        }
+        
+        // Get environment variables
+        const mnemonic = process.env.MNEMONIC;
+        const publisherId = process.env.PUBLISHER_ID;
+        const packageId = process.env.PACKAGE_ID;
+        const suiNetwork = process.env.SUI_NETWORK;
+        
+        if (!mnemonic) {
+            return res.status(500).json({ 
+                error: 'MNEMONIC not configured in environment variables' 
+            });
+        }
+        
+        if (!publisherId) {
+            return res.status(500).json({ 
+                error: 'PUBLISHER_ID not configured in environment variables' 
+            });
+        }
+        
+        if (!packageId) {
+            return res.status(500).json({ 
+                error: 'PACKAGE_ID not configured in environment variables' 
+            });
+        }
+        
+        if (!suiNetwork) {
+            return res.status(500).json({ 
+                error: 'SUI_NETWORK not configured in environment variables' 
+            });
+        }
+        
+        console.log('🎨 Creating restricted display for:', {
+            braavVersion,
+            displayKeys,
+            timestamp: new Date().toISOString()
+        });
+        
+        const result = await createRestrictedDisplay(
+            mnemonic,
+            publisherId,
+            packageId,
+            suiNetwork,
+            displayKeys,
+            displayValues,
+            braavVersion
+        );
+        
+        console.log('✅ Restricted display created successfully:', {
+            restrictedNftDisplayId: result.restrictedNftDisplayId
+        });
+        
+        res.json({
+            success: true,
+            message: 'Restricted display created successfully',
+            data: {
+                restrictedNftDisplayId: result.restrictedNftDisplayId,
+                braavVersion,
+                displayKeys,
+                displayValues
+            },
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('❌ Create Restricted Display Error:', error.message);
+        
+        res.status(500).json({
+            success: false,
+            message: 'Failed to create restricted display',
+            error: error.message,
+            endpoint: '/api/create-restricted-display',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // 9. Mint NFT
 app.post('/api/mint-nft', validateMintRequest, async (req, res) => {
     try {
@@ -543,6 +649,16 @@ app.get('/api/endpoints', (req, res) => {
                 method: 'POST',
                 path: '/api/create-display',
                 description: 'Create display metadata for NFT type',
+                body: { 
+                    displayKeys: 'array of strings (required) - e.g., ["name", "image_url", "description", "project_url", "coin_story", "video_url"]',
+                    displayValues: 'array of strings (required) - corresponding values for the keys',
+                    braavVersion: 'string (required) - e.g., "BRAAV3", "BRAAV16", "BRAAV17"'
+                }
+            },
+            {
+                method: 'POST',
+                path: '/api/create-restricted-display',
+                description: 'Create restricted display metadata for RestrictedNFT type',
                 body: { 
                     displayKeys: 'array of strings (required) - e.g., ["name", "image_url", "description", "project_url", "coin_story", "video_url"]',
                     displayValues: 'array of strings (required) - corresponding values for the keys',
