@@ -6,7 +6,7 @@ dotenv.config();
 
 // Default values for testing
 const DEFAULT_VALUES = {
-  nftObjectId: "0x1629addc0f74fde6a831b401c120f17ccb73a9101e35739e3e04308e03e754e8",
+  nftObjectId: "0xc1801324ac622a2252683ffce1bcbd59ea793d1ce6432e13f343163ce39d7430",
   newName: "New Gold Coin",
   newCoinId: "new_coin_123",
   braavVersion: "BRAAV16"
