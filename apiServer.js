@@ -836,6 +836,17 @@ app.get('/api/endpoints', (req, res) => {
                 }
             },
             {
+                method: 'POST',
+                path: '/api/edit-nft',
+                description: 'Edit an existing NFT (update name and coin ID)',
+                body: { 
+                    nftObjectId: 'string (required) - Object ID of the NFT to edit',
+                    newName: 'string (required) - New name for the NFT',
+                    newCoinId: 'string (required) - New coin ID for the NFT',
+                    braavVersion: 'string (required) - e.g., "BRAAV3", "BRAAV16", "BRAAV17"'
+                }
+            },
+            {
                 method: 'GET',
                 path: '/api/endpoints',
                 description: 'Get list of all available endpoints'
