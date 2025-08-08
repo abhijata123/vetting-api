@@ -15,6 +15,7 @@ import { createSupply } from './createSupply.js';
 import { createDisplay } from './display.js';
 import { createRestrictedDisplay } from './restrictedDisplay.js';
 import { mintRestrictedNFT } from './mintRestrictedNFT.js';
+import { editNFT } from './editNFT.js';
 
 // Load environment variables
 dotenv.config();
@@ -90,6 +91,38 @@ const validateRestrictedMintRequest = (req, res, next) => {
             success: false,
             error: 'Invalid recipient address format',
             recipientAddress: req.body.recipientAddress
+        });
+    }
+
+    next();
+};
+
+// Request validation middleware for editing NFT
+const validateEditNFTRequest = (req, res, next) => {
+    const requiredFields = [
+        'nftObjectId',
+        'newName',
+        'newCoinId',
+        'braavVersion'
+    ];
+
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+    
+    if (missingFields.length > 0) {
+        return res.status(400).json({
+            success: false,
+            error: 'Missing required fields',
+            missingFields,
+            requiredFields
+        });
+    }
+
+    // Validate NFT object ID format
+    if (!isValidSuiAddress(req.body.nftObjectId)) {
+        return res.status(400).json({
+            success: false,
+            error: 'Invalid NFT object ID format',
+            nftObjectId: req.body.nftObjectId
         });
     }
 
