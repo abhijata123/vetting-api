@@ -6,7 +6,7 @@ dotenv.config();
 
 // Default values for testing - IMPORTANT: Use a valid RestrictedNFT Object ID
 const DEFAULT_VALUES = {
-  nftObjectId: "0x1629addc0f74fde6a831b401c120f17ccb73a9101e35739e3e04308e03e754e8", // Replace with actual RestrictedNFT ID
+  nftObjectId: "0x14cc2cd12f694dcfb9ff2f9c6e0babe996e8fd86f8d3d493bfac10fe9dc7957a", // Replace with actual RestrictedNFT ID
   newName: "Updated Restricted Gold Coin",
   newCoinId: "restricted_coin_456",
   braavVersion: "BRAAV16"
